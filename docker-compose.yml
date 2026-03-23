@@ -1,0 +1,14 @@
+version: '1.0'
+services:
+  sistema-prueba:
+    build: .
+    restart: always
+    # container_name: front_sistema_prueba_v2
+    ports:
+      - '3500:3500'
+    networks:
+      - prueba
+
+networks:
+  prueba:
+    name: prueba
