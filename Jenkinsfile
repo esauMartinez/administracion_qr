@@ -10,7 +10,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '📥 Clonando repositorio desde GitHub...'
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/esauMartinez/administracion_qr.git'
             }
         }
 
@@ -21,7 +22,7 @@ pipeline {
                     echo "Node version: $(node --version || echo 'Node no instalado')"
                     echo "NPM version: $(npm --version || echo 'NPM no instalado')"
                     echo "Docker version: $(docker --version)"
-                    echo "Docker Compose version: $(docker-compose --version)"
+                    echo "Docker Compose version: $(sudo docker compose version || echo 'Docker Compose no disponible')"
                 '''
             }
         }
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 echo '🛑 Deteniendo contenedores anteriores...'
                 sh '''
-                    docker-compose -f ${DOCKER_COMPOSE_FILE} down || true
+                    sudo docker compose -f ${DOCKER_COMPOSE_FILE} down || true
                 '''
             }
         }
@@ -39,7 +40,7 @@ pipeline {
             steps {
                 echo '🔨 Construyendo imagen Docker...'
                 sh '''
-                    docker-compose -f ${DOCKER_COMPOSE_FILE} build --no-cache
+                    sudo docker compose -f ${DOCKER_COMPOSE_FILE} build --no-cache
                 '''
             }
         }
@@ -48,7 +49,7 @@ pipeline {
             steps {
                 echo '🚀 Desplegando aplicación...'
                 sh '''
-                    docker-compose -f ${DOCKER_COMPOSE_FILE} up -d
+                    sudo docker compose -f ${DOCKER_COMPOSE_FILE} up -d
                 '''
             }
         }
@@ -58,8 +59,8 @@ pipeline {
                 echo '✅ Verificando despliegue...'
                 sh '''
                     sleep 10
-                    docker-compose -f ${DOCKER_COMPOSE_FILE} ps
-                    docker-compose -f ${DOCKER_COMPOSE_FILE} logs --tail=50
+                    sudo docker compose -f ${DOCKER_COMPOSE_FILE} ps
+                    sudo docker compose -f ${DOCKER_COMPOSE_FILE} logs --tail=50
                 '''
             }
         }
@@ -71,7 +72,7 @@ pipeline {
         }
         failure {
             echo '❌ El despliegue falló. Revisando logs...'
-            sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} logs --tail=100'
+            sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} logs --tail=100'
         }
         always {
             echo '🧹 Limpiando imágenes antiguas...'
