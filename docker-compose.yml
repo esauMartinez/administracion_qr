@@ -8,11 +8,11 @@ services:
     container_name: front_sistema_prueba
     restart: unless-stopped
     ports:
-      - '3500:3500'
+      - '3300:3300'
     networks:
       - prueba
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3500"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3300']
       interval: 30s
       timeout: 10s
       retries: 3

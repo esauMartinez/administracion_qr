@@ -23,7 +23,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Configuración de nginx para SPA
 RUN echo 'server { \n\
-    listen 3500; \n\
+    listen 3300; \n\
     server_name localhost; \n\
     root /usr/share/nginx/html; \n\
     index index.html; \n\
@@ -36,6 +36,6 @@ RUN echo 'server { \n\
     } \n\
 }' > /etc/nginx/conf.d/default.conf
 
-EXPOSE 3500
+EXPOSE 3300
 
 CMD ["nginx", "-g", "daemon off;"]
