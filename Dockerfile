@@ -1,40 +1,29 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
+# Etapa 1: Build
+FROM node:20-alpine AS build
 
+# Crear directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Copiar archivos
 COPY package*.json ./
+RUN npm install
 
-# Instalar dependencias
-RUN npm ci
-
-# Copiar código fuente
 COPY . .
 
-# Construir aplicación
+# Compilar el proyecto (carpeta dist)
 RUN npm run build
 
-# Stage 2: Production
-FROM nginx:alpine
+# Etapa 2: Servir con Nginx
+FROM nginx:stable-alpine
 
-# Copiar archivos construidos
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Eliminar configuración por defecto
+RUN rm -rf /usr/share/nginx/html/*
 
-# Configuración de nginx para SPA
-RUN echo 'server { \n\
-    listen 3300; \n\
-    server_name localhost; \n\
-    root /usr/share/nginx/html; \n\
-    index index.html; \n\
-    location / { \n\
-        try_files $uri $uri/ /index.html; \n\
-    } \n\
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ { \n\
-        expires 1y; \n\
-        add_header Cache-Control "public, immutable"; \n\
-    } \n\
-}' > /etc/nginx/conf.d/default.conf
+# Copiar los archivos compilados desde la etapa anterior
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copiar una configuración personalizada de Nginx (opcional)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3300
 
