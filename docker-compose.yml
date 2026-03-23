@@ -1,14 +1,24 @@
-version: '1.0'
+version: '3.8'
+
 services:
   sistema-prueba:
-    build: .
-    restart: always
-    # container_name: front_sistema_prueba_v2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: front_sistema_prueba
+    restart: unless-stopped
     ports:
       - '3500:3500'
     networks:
       - prueba
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3500"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   prueba:
     name: prueba
+    driver: bridge
