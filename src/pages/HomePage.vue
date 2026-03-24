@@ -3,7 +3,7 @@ import { useQrs } from '@/composables/useQrs'
 import QRCode from 'qrcode'
 import { ref, watch } from 'vue'
 
-const { guias } = useQrs()
+const { guias, isLoading } = useQrs()
 
 const qrCCPImages = ref<Record<string, string>>({})
 
@@ -108,7 +108,14 @@ const getStatusClass = (estatus: string): string => {
       </div>
     </div>
 
-    <div v-else class="no-data">
+    <div class="no-data" v-if="isLoading">
+      <div class="loading-wrapper" role="status" aria-live="polite">
+        <span class="spinner-loader" aria-hidden="true"></span>
+        <p class="loading-text">Cargando datos...</p>
+      </div>
+    </div>
+
+    <div class="no-data" v-if="guias.length === 0 && !isLoading">
       <p>📭 No hay códigos QR disponibles</p>
     </div>
   </div>
@@ -360,6 +367,36 @@ h1 {
   font-size: 18px;
 }
 
+.loading-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.spinner-loader {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e8ecff;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #667eea;
+  letter-spacing: 0.3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* RESPONSIVE - Tablet */
 @media (max-width: 768px) {
   .container {
@@ -440,6 +477,15 @@ h1 {
   .no-data {
     padding: 40px 20px;
     font-size: 16px;
+  }
+
+  .spinner-loader {
+    width: 38px;
+    height: 38px;
+  }
+
+  .loading-text {
+    font-size: 14px;
   }
 }
 </style>
