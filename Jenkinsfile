@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     triggers {
         githubPush()
     }
@@ -27,6 +27,15 @@ pipeline {
                     echo "NPM version: $(npm --version || echo 'NPM no instalado')"
                     echo "Docker version: $(docker --version)"
                     echo "Docker Compose version: $(sudo docker compose version || echo 'Docker Compose no disponible')"
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo '🧪 Ejecutando pruebas...'
+                sh '''
+                    npm run test
                 '''
             }
         }
