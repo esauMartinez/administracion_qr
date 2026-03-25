@@ -16,6 +16,11 @@ const generateQrCCP = async (id: string, url: string) => {
   }
 }
 
+const openQrCCP = (url: string) => {
+  if (!url) return
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 watch(guias, (newGuias) => {
   newGuias.forEach((g) => generateQrCCP(g.guia, g.qrCCP))
 })
@@ -57,13 +62,23 @@ const getStatusClass = (estatus: string): string => {
               ></iframe>
             </td>
             <td>
-              <img
-                v-if="qrCCPImages[guia.guia]"
-                :src="qrCCPImages[guia.guia]"
-                class="qr-ccp-img"
-                alt="QR CCP"
-              />
-              <span v-else class="qr-loading">...</span>
+              <div class="qr-ccp-content">
+                <img
+                  v-if="qrCCPImages[guia.guia]"
+                  :src="qrCCPImages[guia.guia]"
+                  class="qr-ccp-img"
+                  alt="QR CCP"
+                />
+                <span v-else class="qr-loading">...</span>
+                <button
+                  type="button"
+                  class="qr-ccp-button"
+                  :disabled="!guia.qrCCP"
+                  @click="openQrCCP(guia.qrCCP)"
+                >
+                  Abrir CCP
+                </button>
+              </div>
             </td>
             <td class="status-cell">
               <span class="status-badge" :class="getStatusClass(guia.estatus)">
@@ -93,14 +108,24 @@ const getStatusClass = (estatus: string): string => {
             </div>
             <div class="card-qr-item">
               <p class="card-qr-label">QR CCP</p>
-              <div class="card-iframe card-iframe-ccp">
-                <img
-                  v-if="qrCCPImages[guia.guia]"
-                  :src="qrCCPImages[guia.guia]"
-                  style="width: 100%; height: auto; display: block"
-                  alt="QR CCP"
-                />
-                <span v-else class="qr-loading">...</span>
+              <div class="card-qr-ccp-content">
+                <div class="card-iframe card-iframe-ccp">
+                  <img
+                    v-if="qrCCPImages[guia.guia]"
+                    :src="qrCCPImages[guia.guia]"
+                    style="width: 100%; height: auto; display: block"
+                    alt="QR CCP"
+                  />
+                  <span v-else class="qr-loading">...</span>
+                </div>
+                <button
+                  type="button"
+                  class="qr-ccp-button"
+                  :disabled="!guia.qrCCP"
+                  @click="openQrCCP(guia.qrCCP)"
+                >
+                  Abrir CCP
+                </button>
               </div>
             </div>
           </div>
@@ -207,6 +232,13 @@ h1 {
 
 .status-cell {
   text-align: center;
+}
+
+.qr-ccp-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .qr-iframe {
@@ -341,6 +373,14 @@ h1 {
   padding: 18px;
 }
 
+.card-qr-ccp-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
 .qr-ccp-img {
   border: 2px solid #e0e0e0;
   border-radius: 6px;
@@ -353,6 +393,33 @@ h1 {
 
 .qr-ccp-img:hover {
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.qr-ccp-button {
+  min-width: 120px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.qr-ccp-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(102, 126, 234, 0.28);
+}
+
+.qr-ccp-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .qr-loading {
@@ -472,6 +539,10 @@ h1 {
     width: 100%;
     height: auto;
     aspect-ratio: 1;
+  }
+
+  .qr-ccp-button {
+    width: 100%;
   }
 
   .no-data {
