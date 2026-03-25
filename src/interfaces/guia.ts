@@ -3,4 +3,5 @@ export interface Guia {
   qr: string
   estatus: string
   qrCCP: string
+  linkCP: string
 }

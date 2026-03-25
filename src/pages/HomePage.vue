@@ -16,7 +16,7 @@ const generateQrCCP = async (id: string, url: string) => {
   }
 }
 
-const openQrCCP = (url: string) => {
+const openQrLink = (url: string) => {
   if (!url) return
   window.open(url, '_blank', 'noopener,noreferrer')
 }
@@ -56,10 +56,20 @@ const getStatusClass = (estatus: string): string => {
           <tr v-for="guia in guias" :key="guia.guia" class="table-row">
             <td class="guia-cell">{{ guia.guia }}</td>
             <td>
-              <iframe
-                :srcdoc="`<html><body style='margin:0;padding:8px;'><img src='data:image/png;base64,${guia.qr}' style='max-width:100%;height:auto;display:block;'></body></html>`"
-                class="qr-iframe"
-              ></iframe>
+              <div class="qr-ccp-content">
+                <iframe
+                  :srcdoc="`<html><body style='margin:0;padding:8px;'><img src='data:image/png;base64,${guia.qr}' style='max-width:100%;height:auto;display:block;'></body></html>`"
+                  class="qr-iframe"
+                ></iframe>
+                <button
+                  type="button"
+                  class="qr-ccp-button"
+                  :disabled="!guia.linkCP"
+                  @click="openQrLink(guia.linkCP)"
+                >
+                  Abrir CP
+                </button>
+              </div>
             </td>
             <td>
               <div class="qr-ccp-content">
@@ -74,7 +84,7 @@ const getStatusClass = (estatus: string): string => {
                   type="button"
                   class="qr-ccp-button"
                   :disabled="!guia.qrCCP"
-                  @click="openQrCCP(guia.qrCCP)"
+                  @click="openQrLink(guia.qrCCP)"
                 >
                   Abrir CCP
                 </button>
@@ -101,10 +111,20 @@ const getStatusClass = (estatus: string): string => {
           <div class="card-qrs">
             <div class="card-qr-item">
               <p class="card-qr-label">QR CP</p>
-              <iframe
-                :srcdoc="`<html><body style='margin:0;padding:8px;'><img src='data:image/png;base64,${guia.qr}' style='width:100%;height:auto;display:block;'></body></html>`"
-                class="card-iframe"
-              ></iframe>
+              <div class="card-qr-ccp-content">
+                <iframe
+                  :srcdoc="`<html><body style='margin:0;padding:8px;'><img src='data:image/png;base64,${guia.qr}' style='width:100%;height:auto;display:block;'></body></html>`"
+                  class="card-iframe"
+                ></iframe>
+                <button
+                  type="button"
+                  class="qr-ccp-button"
+                  :disabled="!guia.linkCP"
+                  @click="openQrLink(guia.linkCP)"
+                >
+                  Abrir CP
+                </button>
+              </div>
             </div>
             <div class="card-qr-item">
               <p class="card-qr-label">QR CCP</p>
@@ -122,7 +142,7 @@ const getStatusClass = (estatus: string): string => {
                   type="button"
                   class="qr-ccp-button"
                   :disabled="!guia.qrCCP"
-                  @click="openQrCCP(guia.qrCCP)"
+                  @click="openQrLink(guia.qrCCP)"
                 >
                   Abrir CCP
                 </button>
