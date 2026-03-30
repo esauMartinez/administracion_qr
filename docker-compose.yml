@@ -7,8 +7,8 @@ services:
     ports:
       - '3300:3300'
     networks:
-      - prueba
+      - sistema_relojes_default
 
-networks:
-  prueba:
-    name: prueba
+# networks:
+#   prueba:
+#     name: prueba
