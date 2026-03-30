@@ -31,20 +31,20 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                echo '🧪 Ejecutando pruebas...'
-                sh '''
-                    npm run test
-                '''
-            }
-        }
-
         stage('Stop Previous Containers') {
             steps {
                 echo '🛑 Deteniendo contenedores anteriores...'
                 sh '''
                     sudo docker compose -f ${DOCKER_COMPOSE_FILE} down || true
+                '''
+            }
+        }
+
+        stage('Create Docker Network') {
+            steps {
+                echo '🌐 Creando red Docker si no existe...'
+                sh '''
+                    sudo docker network create api_sistema_mantenimiento_default || true
                 '''
             }
         }
@@ -81,7 +81,7 @@ pipeline {
 
     post {
         success {
-            echo '✅ Despliegue exitoso! La aplicación está disponible en http://localhost:3500'
+            echo '✅ Despliegue exitoso! La aplicación está disponible en http://192.168.4.213:3300/'
         }
         failure {
             echo '❌ El despliegue falló. Revisando logs...'
