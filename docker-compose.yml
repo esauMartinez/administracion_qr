@@ -12,3 +12,4 @@ services:
 networks:
   api_sistema_mantenimiento_default:
     name: api_sistema_mantenimiento_default
+    external: true
