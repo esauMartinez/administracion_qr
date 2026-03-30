@@ -7,9 +7,9 @@ services:
     ports:
       - '3300:3300'
     networks:
-      - apis
+      - network-apis
 
 networks:
-  apis:
-    name: apis
+  network-apis:
+    name: network-apis
     external: true
