@@ -9,6 +9,6 @@ services:
     networks:
       - sistema_relojes_default
 
-# networks:
-#   prueba:
-#     name: prueba
+networks:
+  sistema_relojes_default:
+    name: sistema_relojes_default
